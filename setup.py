@@ -19,7 +19,7 @@ setup(
     author='Fumitoshi Morisato',
     author_email='fmorisato@gmail.com',
     url='https://github.com/Fumipo-Theta/func_helper',
-    install_requires=['functools'],
+    install_requires=[],
     license=license,
     packages=find_packages(exclude=('tests', 'docs'))
 )
