@@ -16,6 +16,14 @@ def filtering(pred):
 
 
 def reducing(reduceFunc):
+    """
+    reducing: (acc, e -> acc) -> a -> [a] -> acc
+
+    Usage
+    -----
+    reducing(reduce_func)(initial)(arr)
+
+    """
     return lambda initial: lambda arr: reduce(
         reduceFunc,
         arr,
