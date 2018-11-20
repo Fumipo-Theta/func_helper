@@ -1,23 +1,28 @@
+from typing import List, Tuple, Iterable, Iterator, TypeVar, Callable, Union
 from functools import reduce
 
+T = TypeVar('T')
+S = TypeVar('S')
 
-def mapping(mapFunc):
+
+def mapping(mapFunc: Callable[[T], S])->Callable[[Iterator[T]], Iterator[S]]:
     return lambda arr: map(
         mapFunc,
         arr
     )
 
 
-def filtering(pred):
+def filtering(pred: Callable[[T], bool]) -> Callable[[Iterator[T]], Iterator[T]]:
     return lambda arr: filter(
         pred,
         arr
     )
 
 
-def reducing(reduceFunc):
+def reducing(reduceFunc: Callable[[T, S], T])->Callable[[T], Callable[[Iterator[S]], T]]:
     """
-    reducing: (acc, e -> acc) -> a -> [a] -> acc
+    reducing: (T, S -> T) -> T -> ([S] -> T)
+    reducing: (acc, e -> acc) -> a -> ([a] -> acc)
 
     Usage
     -----
@@ -31,7 +36,7 @@ def reducing(reduceFunc):
     )
 
 
-def is_all(pred):
+def is_all(pred: Callable[[T], bool])->Callable[[Iterable[T]], bool]:
     """
     pred: a -> bool
     arr: list, tuple
@@ -46,7 +51,7 @@ assert(is_all(lambda x: x > 0)([1, 2, 3, 4, 5]) is True)
 assert(is_all(lambda x: x > 0)((1, 2, 3, 4, 0)) is not True)
 
 
-def is_any(pred):
+def is_any(pred: Callable[[T], bool]):
     """
     pred:a -> bool
     arr: list, tuple
@@ -73,3 +78,16 @@ def all_equal(arr):
 
 assert(all_equal([1, 1, 1]) is True)
 assert(all_equal((1, 1, 2)) is not True)
+
+
+def range_generator(array: List[T]) -> Iterator[Tuple[T, T]]:
+    """
+    Iterate tuple of pair of values from start of the list.
+    """
+    lower = array[0:-1]
+    upper = array[1:]
+    return zip(lower, upper)
+
+
+assert(list(range_generator([0, 1, 2, 3, 4]))
+       == [(0, 1), (1, 2), (2, 3), (3, 4)])
