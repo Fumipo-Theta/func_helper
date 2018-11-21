@@ -57,11 +57,11 @@ def close_interval(lower, upper):
     def apply(df: pd.DataFrame, column=None) -> pd.DataFrame:
         dt = df.index if column is None else df[column]
         if lower and upper:
-            return df[(lower < dt) & (dt < upper)]
+            return df[(lower <= dt) & (dt <= upper)]
         elif lower:
-            return df[lower < dt]
+            return df[lower <= dt]
         elif upper:
-            return df[dt < upper]
+            return df[dt <= upper]
         else:
             return df
     return apply
