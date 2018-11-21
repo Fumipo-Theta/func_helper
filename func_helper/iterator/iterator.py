@@ -80,7 +80,7 @@ assert(all_equal([1, 1, 1]) is True)
 assert(all_equal((1, 1, 2)) is not True)
 
 
-def range_generator(array: List[T]) -> Iterator[Tuple[T, T]]:
+def interval_generator(array: List[T]) -> Iterator[Tuple[T, T]]:
     """
     Iterate tuple of pair of values from start of the list.
     """
@@ -89,5 +89,5 @@ def range_generator(array: List[T]) -> Iterator[Tuple[T, T]]:
     return zip(lower, upper)
 
 
-assert(list(range_generator([0, 1, 2, 3, 4]))
+assert(list(interval_generator([0, 1, 2, 3, 4]))
        == [(0, 1), (1, 2), (2, 3), (3, 4)])

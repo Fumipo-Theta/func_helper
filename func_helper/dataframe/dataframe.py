@@ -6,13 +6,12 @@ T = TypeVar('T')
 
 
 def time_range(f):
-    def wrap(*arg):
-        return f(*pd.to_datetime(arg))
+    def wrap(*arg, **kwargs):
+        return f(*pd.to_datetime(arg), **kwargs)
     return wrap
 
 
-def filter_between(lower, upper):
-
+def right_open_interval(lower, upper):
     def apply(df: pd.DataFrame, column=None) -> pd.DataFrame:
         dt = df.index if column is None else df[column]
         if lower and upper:
@@ -24,6 +23,59 @@ def filter_between(lower, upper):
         else:
             return df
     return apply
+
+
+def left_open_interval(lower, upper):
+    def apply(df: pd.DataFrame, column=None) -> pd.DataFrame:
+        dt = df.index if column is None else df[column]
+        if lower and upper:
+            return df[(lower < dt) & (dt <= upper)]
+        elif lower:
+            return df[lower < dt]
+        elif upper:
+            return df[dt <= upper]
+        else:
+            return df
+    return apply
+
+
+def open_interval(lower, upper):
+    def apply(df: pd.DataFrame, column=None) -> pd.DataFrame:
+        dt = df.index if column is None else df[column]
+        if lower and upper:
+            return df[(lower < dt) & (dt < upper)]
+        elif lower:
+            return df[lower < dt]
+        elif upper:
+            return df[dt < upper]
+        else:
+            return df
+    return apply
+
+
+def close_interval(lower, upper):
+    def apply(df: pd.DataFrame, column=None) -> pd.DataFrame:
+        dt = df.index if column is None else df[column]
+        if lower and upper:
+            return df[(lower < dt) & (dt < upper)]
+        elif lower:
+            return df[lower < dt]
+        elif upper:
+            return df[dt < upper]
+        else:
+            return df
+    return apply
+
+
+def filter_between(lower, upper, open_left=False, open_right=True):
+    if open_left and open_right:
+        return open_interval(lower, upper)
+    elif open_left:
+        return left_open_interval(lower, upper)
+    elif open_right:
+        return right_open_interval(lower, upper)
+    else:
+        return close_interval(lower, upper)
 
 
 def setTimeSeriesIndex(*columnName):
