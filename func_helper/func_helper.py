@@ -67,6 +67,12 @@ def pip(*funcs):
     return g
 
 
+"""
+# next version of pip
+pip = lambda *funcs: lambda *arg: reduce(lambda acc,f: f(*acc), funcs, arg)
+"""
+
+
 def trace(f):
     def traced(*arg):
         print("called with argument " + str(arg))

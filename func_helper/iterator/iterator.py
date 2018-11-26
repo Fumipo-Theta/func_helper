@@ -83,6 +83,10 @@ assert(all_equal((1, 1, 2)) is not True)
 def interval_generator(array: List[T]) -> Iterator[Tuple[T, T]]:
     """
     Iterate tuple of pair of values from start of the list.
+
+    Usage
+    -----
+    interval_generator([0,1,2,3]) -> [(0,1),(1,2),(2,3)]
     """
     lower = array[0:-1]
     upper = array[1:]
@@ -91,3 +95,36 @@ def interval_generator(array: List[T]) -> Iterator[Tuple[T, T]]:
 
 assert(list(interval_generator([0, 1, 2, 3, 4]))
        == [(0, 1), (1, 2), (2, 3), (3, 4)])
+
+
+def rich_mapping(map_func):
+    """
+    (T, int, Array[T] -> S) -> Array[T] -> Array[S]
+    (e,i,arr -> v) -> arr -> arr
+    """
+    def apply(arr):
+        ret = []
+        for i, v in enumerate(arr):
+            ret.append(map_func(v, i, arr))
+        return ret
+    return apply
+
+
+def tuple_mapping(map_func):
+    """
+    (*T -> S) -> Tuple[T] -> List[S]
+
+    Usage
+    -----
+    tuple_mapping(
+        lambda x,y : x+y
+    )([(0,1),(1,1),(2,1)])
+
+    # -> [1,2,3]
+    """
+    def apply(tpls):
+        ret = []
+        for t in tpls:
+            ret.append(map_func(*t))
+        return ret
+    return apply
