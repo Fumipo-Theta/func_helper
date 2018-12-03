@@ -7,3 +7,4 @@ Accessor for dictionary
 """
 
 from .dig import dig, dig_all, get
+from .over_iterator import over_iterator

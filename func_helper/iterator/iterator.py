@@ -128,3 +128,7 @@ def tuple_mapping(map_func):
             ret.append(map_func(*t))
         return ret
     return apply
+
+
+def over_iterator(*fns):
+    return lambda it: map(lambda f: [f(i) for i in it], fns)
