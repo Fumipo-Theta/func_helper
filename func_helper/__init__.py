@@ -33,7 +33,7 @@ Dictionary
   dictionary
 """
 
-from .func_helper import compose, pip, tee, mapping, filtering, reducing, identity, over_args, memoize, trace, Y, recursiveExtender
+from .func_helper import compose, pip, tee, identity, over_args, memoize, trace, Y, recursiveExtender
 from . import transducer
 from . import iterator
 from . import dictionary

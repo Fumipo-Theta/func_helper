@@ -14,11 +14,11 @@ def time_range(f):
 def right_open_interval(lower, upper):
     def apply(df: pd.DataFrame, column=None) -> pd.DataFrame:
         dt = df.index if column is None else df[column]
-        if lower and upper:
+        if lower is not None and upper is not None:
             return df[(lower <= dt) & (dt < upper)]
-        elif lower:
+        elif lower is not None:
             return df[lower <= dt]
-        elif upper:
+        elif upper is not None:
             return df[dt < upper]
         else:
             return df
@@ -28,11 +28,11 @@ def right_open_interval(lower, upper):
 def left_open_interval(lower, upper):
     def apply(df: pd.DataFrame, column=None) -> pd.DataFrame:
         dt = df.index if column is None else df[column]
-        if lower and upper:
+        if lower is not None and upper is not None:
             return df[(lower < dt) & (dt <= upper)]
-        elif lower:
+        elif lower is not None:
             return df[lower < dt]
-        elif upper:
+        elif upper is not None:
             return df[dt <= upper]
         else:
             return df
@@ -42,11 +42,14 @@ def left_open_interval(lower, upper):
 def open_interval(lower, upper):
     def apply(df: pd.DataFrame, column=None) -> pd.DataFrame:
         dt = df.index if column is None else df[column]
-        if lower and upper:
+        print(df)
+        print(dt)
+        print()
+        if lower is not None and upper is not None:
             return df[(lower < dt) & (dt < upper)]
-        elif lower:
-            return df[lower < dt]
-        elif upper:
+        elif lower is not None:
+            return df[(lower < dt)]
+        elif upper is not None:
             return df[dt < upper]
         else:
             return df
@@ -56,11 +59,11 @@ def open_interval(lower, upper):
 def close_interval(lower, upper):
     def apply(df: pd.DataFrame, column=None) -> pd.DataFrame:
         dt = df.index if column is None else df[column]
-        if lower and upper:
+        if lower is not None and upper is not None:
             return df[(lower <= dt) & (dt <= upper)]
-        elif lower:
+        elif lower is not None:
             return df[lower <= dt]
-        elif upper:
+        elif upper is not None:
             return df[dt <= upper]
         else:
             return df

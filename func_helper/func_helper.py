@@ -163,28 +163,6 @@ def tee(f):
     return g
 
 
-def mapping(mapFunc):
-    return lambda arr: map(
-        mapFunc,
-        arr
-    )
-
-
-def filtering(pred):
-    return lambda arr: filter(
-        pred,
-        arr
-    )
-
-
-def reducing(reduceFunc):
-    return lambda initial: lambda arr: reduce(
-        reduceFunc,
-        arr,
-        initial
-    )
-
-
 class dotdict(object):
     """オブジェクトグラフ内の辞書要素をプロパティ風にアクセスすることを可能にするラッパー。
         DotAccessible( { 'foo' : 42 } ).foo==42
