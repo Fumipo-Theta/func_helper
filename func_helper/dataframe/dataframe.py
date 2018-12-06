@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from typing import List, Tuple, Iterator, TypeVar
 import func_helper.func_helper.iterator as it
 
@@ -11,14 +12,17 @@ def time_range(f):
     return wrap
 
 
+_invalid_range = [None, pd.NaT, np.nan]
+
+
 def right_open_interval(lower, upper):
     def apply(df: pd.DataFrame, column=None) -> pd.DataFrame:
         dt = df.index if column is None else df[column]
-        if lower is not None and upper is not None:
+        if lower not in _invalid_range and upper not in _invalid_range:
             return df[(lower <= dt) & (dt < upper)]
-        elif lower is not None:
+        elif lower not in _invalid_range:
             return df[lower <= dt]
-        elif upper is not None:
+        elif upper not in _invalid_range:
             return df[dt < upper]
         else:
             return df
@@ -28,11 +32,11 @@ def right_open_interval(lower, upper):
 def left_open_interval(lower, upper):
     def apply(df: pd.DataFrame, column=None) -> pd.DataFrame:
         dt = df.index if column is None else df[column]
-        if lower is not None and upper is not None:
+        if lower not in _invalid_range and upper not in _invalid_range:
             return df[(lower < dt) & (dt <= upper)]
-        elif lower is not None:
+        elif lower not in _invalid_range:
             return df[lower < dt]
-        elif upper is not None:
+        elif upper not in _invalid_range:
             return df[dt <= upper]
         else:
             return df
@@ -45,11 +49,11 @@ def open_interval(lower, upper):
         print(df)
         print(dt)
         print()
-        if lower is not None and upper is not None:
+        if lower not in _invalid_range and upper not in _invalid_range:
             return df[(lower < dt) & (dt < upper)]
-        elif lower is not None:
+        elif lower not in _invalid_range:
             return df[(lower < dt)]
-        elif upper is not None:
+        elif upper not in _invalid_range:
             return df[dt < upper]
         else:
             return df
@@ -59,11 +63,11 @@ def open_interval(lower, upper):
 def close_interval(lower, upper):
     def apply(df: pd.DataFrame, column=None) -> pd.DataFrame:
         dt = df.index if column is None else df[column]
-        if lower is not None and upper is not None:
+        if lower not in _invalid_range and upper not in _invalid_range:
             return df[(lower <= dt) & (dt <= upper)]
-        elif lower is not None:
+        elif lower not in _invalid_range:
             return df[lower <= dt]
-        elif upper is not None:
+        elif upper not in _invalid_range:
             return df[dt <= upper]
         else:
             return df
