@@ -1,25 +1,25 @@
-from typing import List, Tuple, Iterable, Iterator, TypeVar, Callable, Union
+from typing import List, Tuple, Iterable, Iterator, TypeVar, Callable, Union, MappingView
 from functools import reduce
 
 T = TypeVar('T')
 S = TypeVar('S')
 
 
-def mapping(mapFunc: Callable[[T], S])->Callable[[Iterator[T]], Iterator[S]]:
+def mapping(mapFunc: Callable[[T], S])->Callable[[Iterable[T]], Iterable[S]]:
     return lambda arr: map(
         mapFunc,
         arr
     )
 
 
-def filtering(pred: Callable[[T], bool]) -> Callable[[Iterator[T]], Iterator[T]]:
+def filtering(pred: Callable[[T], bool]) -> Callable[[Iterable[T]], Iterable[T]]:
     return lambda arr: filter(
         pred,
         arr
     )
 
 
-def reducing(reduceFunc: Callable[[T, S], T])->Callable[[T], Callable[[Iterator[S]], T]]:
+def reducing(reduceFunc: Callable[[T, S], T])->Callable[[T], Callable[[Iterable[S]], T]]:
     """
     reducing: (T, S -> T) -> T -> ([S] -> T)
     reducing: (acc, e -> acc) -> a -> ([a] -> acc)
