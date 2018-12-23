@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from typing import List, Tuple, Iterator, TypeVar
-import func_helper.func_helper.iterator as it
+from ..iterator import * as it
 
 T = TypeVar('T')
 

@@ -13,3 +13,4 @@ Utility for varidation
 
 """
 from .iterator import *
+from .duplicate_last import DuplicateLast
