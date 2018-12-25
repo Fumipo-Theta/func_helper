@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from typing import List, Tuple, Iterator, TypeVar
-from ..iterator import * as it
+from functools import reduce
 
 T = TypeVar('T')
 
@@ -109,8 +109,11 @@ def setTimeSeriesIndex(*columnName):
         columnName[0]) == list else list(columnName)
 
     def f(df: pd.DataFrame)->pd.DataFrame:
-        datetime_str = it.reducing(
-            lambda a, e: a+" "+e)("")([df[c] for c in columns])
+        datetime_str = reduce(
+            lambda a, e: a+" "+e,
+            [df[c] for c in columns],
+            ""
+        )
 
         df["datetime"] = pd.to_datetime(datetime_str)
 
