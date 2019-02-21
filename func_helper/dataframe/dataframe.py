@@ -74,7 +74,17 @@ def close_interval(lower, upper):
     return apply
 
 
-def filter_between(lower, upper, open_left=False, open_right=True):
+def filter_between(*range, open_left=False, open_right=True):
+    print(range)
+    if len(range) >= 2:
+        lower = range[0]
+        upper = range[1]
+    elif type(range[0]) is list:
+        lower = range[0][0] if type(range[0]) is list else range[0]
+        upper = range[0][1] if len(range[0]) >= 2 else None
+    else:
+        raise SystemError("range must be number or list of numbers.")
+
     if open_left and open_right:
         return open_interval(lower, upper)
     elif open_left:
