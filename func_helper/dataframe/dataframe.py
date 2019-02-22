@@ -75,7 +75,7 @@ def close_interval(lower, upper):
 
 
 def filter_between(*range, open_left=False, open_right=True):
-    print(range)
+
     if len(range) >= 2:
         lower = range[0]
         upper = range[1]
