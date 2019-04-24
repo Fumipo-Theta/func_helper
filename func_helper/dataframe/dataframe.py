@@ -130,3 +130,67 @@ def setTimeSeriesIndex(*columnName):
         df.set_index("datetime", inplace=True)
         return df
     return f
+
+
+def flatten_table(primary_key: str, concat_keys_func=lambda p, c: f"{p}-{c}"):
+    """
+    flatten_table(
+        'primary',
+        lambda p_name,c_name: f'{p_name}-{c_name}'
+    )(
+        "new_col",
+        "value"
+    )(df)
+
+    convert df: pandas.DataFrame such that
+
+    primary col1 col2 col3
+    p1      d11  d12  d13
+    p2      d21  d22  d23
+
+    into
+
+    new_col value
+    p1-col1 d11
+    p1-col2 d12
+    p1-col3 d13
+    p2-col1 d21
+    p2-col2 d22
+    p2-col3 d23
+
+
+    """
+    def apply(df: pd.DataFrame, primary_name, data_name)->pd.DataFrame:
+        new_data = [[], []]
+        for i, row in df.iterrows():
+            for col in df.columns:
+                if col is primary_key:
+                    pass
+                else:
+                    new_data[0].append(concat_keys_func(row[primary_key], col))
+                    new_data[1].append(row[col])
+        new_df = pd.DataFrame(
+            {k: v for k, v in zip([primary_name, data_name], new_data)})
+        return new_df
+
+    def set_column_names(index_name=primary_key, data_name="data"):
+        return lambda df: apply(df, index_name, data_name)
+    return set_column_names
+
+
+def transform(*args, **kwargs):
+    """
+    Return the new DataFrame transformed from the older one.
+
+    transform(
+        {"col1[unit]":lambda df: df["col1"]},
+        col1=lambda df: df["col1"]**2
+    )(df)
+    """
+    mutate_dict = args[0] if (len(args) > 0 and type(args[0]) is dict) else {}
+    methods = {**mutate_dict, **kwargs}
+
+    def apply(df):
+        return reduce(lambda _df, kv: _df.assign(**{kv[0]: kv[1](df)}), methods.items(), df)
+
+    return apply
