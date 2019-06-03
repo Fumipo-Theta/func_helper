@@ -2,10 +2,10 @@
 Utility for transducer
 ----------------------
   intoArray
-  mapping
-  filtering
-  folding
-  taking
+  mapT
+  filterT
+  foldT
+  takeT
 """
 
-from .transducer import intoArray, mapping, filtering, folding, taking
+from .transducer import intoArray, mapT, filterT, foldT, takeT

@@ -29,19 +29,19 @@ def concatReducer(acc, e):
     return [*acc, e] if (e is not None or e is 0) else [*acc]
 
 
-def mapping(func):
+def mapT(func):
     return lambda reducer: lambda acc, e: reducer(acc, func(e))
 
 
-def filtering(pred):
+def filterT(pred):
     return lambda reducer: lambda acc, e: reducer(acc, e) if pred(e) else acc
 
 
-def folding(f):
+def foldT(f):
     return lambda x: lambda reducer: lambda acc, e: reducer(acc, f(x, e)) if len(acc) is 0 else reducer(acc, f(acc[-1], e))
 
 
-def taking(n):
+def takeT(n):
     return lambda reducer: lambda acc, e: reducer(acc, e) if len(acc) < n else reducer(acc, None)
 
 
