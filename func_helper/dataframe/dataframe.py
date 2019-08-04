@@ -7,7 +7,9 @@ from functools import reduce
 T = TypeVar('T')
 Number = Union[int, float, complex]
 
-identity = lambda a: a
+
+def identity(a): return a
+
 
 def time_range(f):
     def wrap(*arg, **kwargs):
@@ -98,7 +100,22 @@ def filter_between(*range, open_left=False, open_right=True):
         return close_interval(lower, upper)
 
 
-def setTimeSeriesIndex(*columnName):
+def to_datetime(*column_names):
+    columns = column_names[0] if type(
+        column_names[0]) == list else list(column_names)
+
+    def f(df: pd.DataFrame)->pd.DataFrame:
+        datetime_str = reduce(
+            lambda a, e: a+" "+e,
+            [df[c] for c in columns],
+            ""
+        )
+
+        return pd.to_datetime(datetime_str)
+    return f
+
+
+def setTimeSeriesIndex(*columnName, inplace=True):
     """
     Set time series index to pandas.DataFrame
     datatime object is created from a column or two columns of
@@ -128,9 +145,14 @@ def setTimeSeriesIndex(*columnName):
             ""
         )
 
-        df["datetime"] = pd.to_datetime(datetime_str)
-
-        df.set_index("datetime", inplace=True)
+        if inplace:
+            df["_dt"] = pd.to_datetime(datetime_str)
+            df.set_index("_dt", inplace=True)
+        else:
+            df["_dt"] = pd.to_datetime(datetime_str)
+            _dt = pd.to_datetime(datetime_str)
+            df["_datetime"] = pd.to_datetime(datetime_str)
+            df.set_index("_dt", inplace=True)
         return df
     return f
 
@@ -324,20 +346,25 @@ def _get_factor_of_bands(bands: List[Tuple[Number, Number]])->List[str]:
         return _fst+"~"+_snd if fst <= snd else _snd+"~"+_fst
     return list(map(stringifier, bands))
 
-def _get_mean_of_bands(bands: List[Tuple[Number,Number]])->List[Number]:
-    def apply(band: Tuple[Number,Number])->Number:
-        fst,snd = band
+
+def _get_mean_of_bands(bands: List[Tuple[Number, Number]])->List[Number]:
+    def apply(band: Tuple[Number, Number])->Number:
+        fst, snd = band
         return 0.5*(fst+snd)
-    return list(map(apply,bands))
+    return list(map(apply, bands))
+
 
 def _get_lower_of_bands(bands):
-    return list(map(lambda band: band[0],bands))
+    return list(map(lambda band: band[0], bands))
+
 
 def _get_upper_of_bands(bands):
-    return list(map(lambda band: band[1],bands))
+    return list(map(lambda band: band[1], bands))
+
 
 def _get_index_of_bands(bands):
-    return list(map(lambda item: item[0],enumerate(bands)))
+    return list(map(lambda item: item[0], enumerate(bands)))
+
 
 def _i_position_selector(position_type):
     if position_type is "index":
@@ -348,12 +375,14 @@ def _i_position_selector(position_type):
         return _get_lower_of_bands
     if position_type is "upper":
         return _get_upper_of_bands
-    raise Exception(f"position_type{position_type} can not be recognized ! Choose 'index|lower|center|upper'.")
+    raise Exception(
+        f"position_type{position_type} can not be recognized ! Choose 'index|lower|center|upper'.")
+
 
 def band_factor(
     bands: List[Tuple[Number, Number]],
     position: str="index"
-    )->Callable[[pd.DataFrame, Optional[str]], Tuple[pd.Series, List[str]]]:
+)->Callable[[pd.DataFrame, Optional[str]], Tuple[pd.Series, List[str]]]:
     """
     Limit of bands must increase monotonic.
 
@@ -380,8 +409,6 @@ def band_factor(
     return apply_to_df
 
 
-
-
 assert(create_bands(-1, 10, 2, False) ==
        [(-1, 1), (1, 3), (3, 5), (5, 7), (7, 9)])
 assert(create_bands(0, 10, 2, False) == [
@@ -397,5 +424,3 @@ assert(list(_get_factor_of_bands(create_bands(-1, 10, 2, True)))
        == ['~-1', '-1~1', '1~3', '3~5', '5~7', '7~9', '9~'])
 assert(list(_get_factor_of_bands(create_bands(10, 0, -2, True)))
        == ['10~', '8~10', '6~8', '4~6', '2~4', '0~2', '~0'])
-
-
