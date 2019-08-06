@@ -14,12 +14,6 @@ Utility for recursive function
   memoize
   trace
 
-Depricated
-----------
-  (For iterator. Use func_helper.iterator package)
-    mapping
-    filtering
-    reducing
 """
 
 from .func_helper import compose, pip, tee, identity, over_args
