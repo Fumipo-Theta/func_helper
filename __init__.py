@@ -16,5 +16,5 @@ Utility for recursive function
 
 """
 
-from .func_helper import compose, pip, tee, identity, over_args
+from .func_helper import compose, pip, tee, identity, over_args, dotdict, demo
 from .func_helper import memoize, trace, Y, recursiveExtender

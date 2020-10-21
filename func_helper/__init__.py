@@ -15,4 +15,4 @@ Recursive function utility
   trace
 """
 
-from .func_helper import compose, pip, tee, identity, over_args, memoize, trace, Y, recursiveExtender
+from .func_helper import compose, pip, tee, identity, over_args, memoize, trace, Y, recursiveExtender, dotdict, demo

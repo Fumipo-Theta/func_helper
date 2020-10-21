@@ -207,3 +207,12 @@ class dotdict(object):
         if isinstance(v, (dict, list, tuple)):  # xx add set
             return self.__class__(v)
         return v
+
+
+def demo(*arg, **kwargs):
+    """
+    Call decorated function imediately.
+    """
+    def wrap(f):
+        f(*arg, **kwargs)
+    return wrap
